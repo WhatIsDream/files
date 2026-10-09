@@ -1,0 +1,626 @@
+<html><head><meta charset='utf-8'><title>HW1 results</title><style>
+body{font-family:Segoe UI,Arial,sans-serif;max-width:1250px;margin:24px auto;padding:0 16px;color:#222}
+h1{border-bottom:3px solid #7a0019;padding-bottom:6px} h2{margin-top:36px;color:#7a0019}
+table{border-collapse:collapse;margin:10px 0;font-size:14px}
+th,td{border:1px solid #bbb;padding:5px 10px;text-align:right} th{background:#f2e6e8}
+td:first-child,th:first-child{text-align:left} img{max-width:100%;border:1px solid #ccc;margin:8px 0}
+.ok{color:#0a7d2c;font-weight:600}.warn{color:#c47a00;font-weight:600}.bad{color:#b00020;font-weight:600}
+.note{background:#fff8e1;border-left:4px solid #f5b800;padding:8px 12px;margin:10px 0}
+code{background:#eee;padding:1px 4px}
+</style></head><body>
+<h1>HW1 - Panorama Stitching: all results in one page</h1>
+<div class='note'>Every number and figure below comes from the same run. Copy the tables into the report; figures are in <code>panels/</code> (and per-set folders).</div>
+<h2>Parameters (state these in the report)</h2>
+<table><tr><th>parameter</th><th>value</th></tr><tr><td>working resolution (long edge)</td><td>800 px</td></tr><tr><td>SIFT</td><td>cv2.SIFT_create(nfeatures=4000), other parameters default</td></tr><tr><td>ratio threshold</td><td>0.75</td></tr><tr><td>cross-check</td><td>False</td></tr><tr><td>RANSAC inlier threshold</td><td>3.0 px (forward transfer error)</td></tr><tr><td>RANSAC fixed iteration budget</td><td>2000</td></tr><tr><td>adaptive RANSAC confidence</td><td>0.99</td></tr><tr><td>random seed</td><td>0</td></tr><tr><td>interpolation</td><td>bilinear</td></tr><tr><td>homography direction</td><td>H maps image B -> image A (A is the reference)</td></tr></table>
+<h2>Core results table (one row per required pair)</h2>
+<table><tr><th>pair</th><th>kp A</th><th>kp B</th><th>candidates</th><th>ratio-test matches</th><th>RANSAC inliers</th><th>inlier ratio</th><th>mean err before refit (px)</th><th>mean err after refit (px)</th><th>canvas W x H</th></tr><tr><td>set1_rotation</td><td>2566</td><td>4000</td><td>2566</td><td>681</td><td>661</td><td>0.971</td><td>0.837</td><td>0.695</td><td>1318x1400</td></tr><tr><td>set2_planar</td><td>1878</td><td>2359</td><td>1878</td><td>538</td><td>516</td><td>0.959</td><td>0.491</td><td>0.475</td><td>1284x630</td></tr></table>
+<h2>Ratio-threshold sweep (use it to justify your ratio)</h2>
+<table><tr><th>pair</th><th>ratio&lt;0.6</th><th>ratio&lt;0.65</th><th>ratio&lt;0.7</th><th>ratio&lt;0.75</th><th>ratio&lt;0.8</th><th>ratio&lt;0.85</th><th>ratio&lt;0.9</th></tr><tr><td>set1_rotation</td><td>555</td><td>600</td><td>646</td><td>681</td><td>714</td><td>772</td><td>915</td></tr><tr><td>set2_planar</td><td>479</td><td>498</td><td>517</td><td>538</td><td>567</td><td>630</td><td>756</td></tr></table>
+<h2>Fixed budget vs. confidence-based stopping (additional feature)</h2>
+<table><tr><th>pair</th><th>fixed iters</th><th>fixed inliers</th><th>adaptive iters (p=0.99)</th><th>adaptive inliers</th></tr><tr><td>set1_rotation</td><td>2000</td><td>661</td><td>5</td><td>606</td></tr><tr><td>set2_planar</td><td>2000</td><td>516</td><td>5</td><td>474</td></tr></table>
+<h2>Automatic sanity checks</h2><ul>
+<li><b>set1_rotation</b><ul>
+<li class='ok'>inlier ratio 97.1%</li>
+<li class='ok'>661 inliers</li>
+<li class='ok'>adaptive RANSAC agrees with fixed budget</li>
+<li class='ok'>canvas 1318x1400 is plausible</li>
+</ul></li>
+<li><b>set2_planar</b><ul>
+<li class='ok'>inlier ratio 95.9%</li>
+<li class='ok'>516 inliers</li>
+<li class='ok'>adaptive RANSAC agrees with fixed budget</li>
+<li class='ok'>canvas 1284x630 is plausible</li>
+</ul></li>
+</ul>
+<h2>Synthetic DLT test (core item 3)</h2>
+<p>Known H =</p><pre> 1.1   0.12   25
+-0.08   0.95  -15
+ 0.0002   0.0001   1</pre>
+<table><tr><th>test</th><th>points</th><th>mean reprojection error (px)</th></tr><tr><td>4 points (minimal)</td><td>4</td><td>6.87e-14</td></tr><tr><td>12 points (overdetermined)</td><td>12</td><td>8.40e-14</td></tr></table>
+<h2>Synthetic warp test (core item 5)</h2>
+<table><tr><th>check</th><th>result</th></tr><tr><td>identity max abs diff</td><td>0.0</td></tr><tr><td>translation (+60,+40) landmark err (px)</td><td>[0.0, 0.0, 0.0, 0.0, 0.0]</td></tr><tr><td>rotation 20deg + scale 0.8 landmark err (px)</td><td>[0.02, 0.08, 0.09, 0.05, 0.0]</td></tr></table>
+<p>Left to right: original, translated by (+60,+40), rotated 20 deg + scaled 0.8. Black crosses = expected landmark positions H&middot;p.</p>
+<img src='synthetic_warp.png'>
+<h2>Input images</h2><img src='panels/inputs_both_sets.png'>
+<h2>Set 1 - fixed-center rotation</h2>
+<h3>Keypoints</h3><img src='panels/set1_rotation_keypoints.png'>
+<h3>Matches before / after ratio test</h3><img src='panels/set1_rotation_ratio_test.png'>
+<h3>RANSAC inliers vs outliers</h3><img src='panels/set1_rotation_ransac.png'>
+<h3>Panorama + boundaries</h3><img src='panels/set1_rotation_panorama.png'>
+<h2>Set 2 - camera translation, planar scene</h2>
+<h3>Keypoints</h3><img src='panels/set2_planar_keypoints.png'>
+<h3>Matches before / after ratio test</h3><img src='panels/set2_planar_ratio_test.png'>
+<h3>RANSAC inliers vs outliers</h3><img src='panels/set2_planar_ransac.png'>
+<h3>Panorama + boundaries</h3><img src='panels/set2_planar_panorama.png'>
+<h2>Multi-image panorama: seq (5 images, reference = image 3)</h2>
+<table><tr><th>parameter</th><th>value</th></tr><tr><td>images</td><td>['rot1.jpg', 'rot2.jpg', 'rot3.jpg', 'rot4.jpg', 'rot5.jpg']</td></tr><tr><td>SIFT nfeatures</td><td>4000</td></tr><tr><td>ratio</td><td>0.75</td></tr><tr><td>RANSAC thr (px)</td><td>3.0</td></tr><tr><td>RANSAC iters</td><td>2000</td></tr><tr><td>interp</td><td>bilinear</td></tr><tr><td>reference choice</td><td>center</td></tr><tr><td>canvas W x H</td><td>3225x2139</td></tr><tr><td>homography chain</td><td>H_k maps image k -> reference by composing consecutive pair homographies</td></tr></table>
+<h3>Consecutive-pair statistics</h3>
+<table><tr><th>pair</th><th>kp i</th><th>kp i+1</th><th>ratio matches</th><th>inliers</th><th>inlier ratio</th><th>err before refit</th><th>err after refit</th></tr><tr><td>1-2</td><td>1973</td><td>2173</td><td>490</td><td>442</td><td>0.902</td><td>1.134</td><td>1.035</td></tr><tr><td>2-3</td><td>2173</td><td>2627</td><td>515</td><td>474</td><td>0.920</td><td>0.824</td><td>0.775</td></tr><tr><td>3-4</td><td>2627</td><td>3733</td><td>553</td><td>506</td><td>0.915</td><td>1.131</td><td>0.890</td></tr><tr><td>4-5</td><td>3733</td><td>4000</td><td>596</td><td>568</td><td>0.953</td><td>1.106</td><td>0.906</td></tr></table>
+<h3>Per-image footprint (accumulated distortion)</h3>
+<table><tr><th>image</th><th>chain length to ref</th><th>area scale vs. original</th></tr><tr><td>1</td><td>2</td><td>3.65</td></tr><tr><td>2</td><td>1</td><td>1.28</td></tr><tr><td>3</td><td>0</td><td>1.00</td></tr><tr><td>4</td><td>1</td><td>1.46</td></tr><tr><td>5</td><td>2</td><td>4.41</td></tr></table>
+<img src='seq/inputs.png'>
+<h3>Final panorama (feather blending)</h3><img src='seq/panorama_feather.png'>
+<h3>Same panorama, overwrite compositing</h3><img src='seq/panorama_overwrite.png'>
+<h3>Input boundaries (one colour per image)</h3><img src='seq/panorama_annotated.png'>
+<h3>RANSAC inliers of each consecutive pair</h3>
+<img style='max-width:48%' src='seq/matches_pair1.png'>
+<img style='max-width:48%' src='seq/matches_pair2.png'>
+<img style='max-width:48%' src='seq/matches_pair3.png'>
+<img style='max-width:48%' src='seq/matches_pair4.png'>
+<h2>Additional feature output: cyl_seq</h2>
+<details><summary>result.json (numbers for the report)</summary><pre>{
+ &quot;n_images&quot;: 5,
+ &quot;reference_image&quot;: 3,
+ &quot;cylinder_f_px&quot;: 579.5070263871814,
+ &quot;f_how&quot;: &quot;estimated from the consecutive homographies (joint fit)&quot;,
+ &quot;single_image_hfov_deg&quot;: 54.73952303157707,
+ &quot;total_hfov_deg_cylinder_canvas&quot;: 138.91215559152937,
+ &quot;flat_canvas&quot;: [
+  3225,
+  2139
+ ],
+ &quot;cyl_canvas&quot;: [
+  1405,
+  815
+ ],
+ &quot;flat_footprint_area_scale&quot;: [
+  3.6490960941571404,
+  1.2847808839710197,
+  0.9970854166666666,
+  1.4567623313488818,
+  4.412637860929925
+ ],
+ &quot;cyl_translation_per_pair_px&quot;: [
+  [
+   -215.25945172830993,
+   1.6547672497724524
+  ],
+  [
+   -195.7663037825766,
+   -0.7796372889838372
+  ],
+  [
+   -245.0285556116364,
+   10.63931328628393
+  ],
+  [
+   -194.86505787137546,
+   3.696323404160829
+  ]
+ ],
+ &quot;cyl_mean_match_residual_px&quot;: [
+  1.5585986489088846,
+  2.1258212827437313,
+  1.839792871772176,
+  1.5372357544690212
+ ],
+ &quot;closure_drift_non_consecutive&quot;: [
+  {
+   &quot;pair&quot;: &quot;1-3&quot;,
+   &quot;direct_t&quot;: [
+    -410.3911316478072,
+    2.2732653537963468
+   ],
+   &quot;chained_t&quot;: [
+    -411.02575551088654,
+    0.8751299607886152
+   ],
+   &quot;inliers&quot;: 114,
+   &quot;drift_px&quot;: 1.535425030657846
+  },
+  {
+   &quot;pair&quot;: &quot;2-4&quot;,
+   &quot;direct_t&quot;: [
+    -442.64423114647934,
+    9.03753287481759
+   ],
+   &quot;chained_t&quot;: [
+    -440.794859394213,
+    9.859675997300092
+   ],
+   &quot;inliers&quot;: 68,
+   &quot;drift_px&quot;: 2.0238812198165035
+  },
+  {
+   &quot;pair&quot;: &quot;3-5&quot;,
+   &quot;direct_t&quot;: [
+    -440.50060069193256,
+    12.154534941018607
+   ],
+   &quot;chained_t&quot;: [
+    -439.89361348301185,
+    14.335636690444758
+   ],
+   &quot;inliers&quot;: 157,
+   &quot;drift_px&quot;: 2.263987259933937
+  }
+ ]
+}</pre></details>
+<h3>cylindrical.png</h3><img src='extras/cyl_seq/cylindrical.png'>
+<h3>cylindrical_annotated.png</h3><img src='extras/cyl_seq/cylindrical_annotated.png'>
+<h3>flat.png</h3><img src='extras/cyl_seq/flat.png'>
+<h3>flat_vs_cylindrical.png</h3><img src='extras/cyl_seq/flat_vs_cylindrical.png'>
+<h2>Additional feature output: focal_pivot</h2>
+<details><summary>result.json (numbers for the report)</summary><pre>{
+ &quot;summary&quot;: {
+  &quot;image_size_wh&quot;: [
+   600,
+   800
+  ],
+  &quot;f35_mm_used&quot;: 26.0,
+  &quot;f35_from_exif&quot;: false,
+  &quot;f_expected_px&quot;: 600.9254251547384,
+  &quot;hfov_expected_deg&quot;: 53.05949221480684,
+  &quot;f_joint_px&quot;: 591.3766184805336,
+  &quot;hfov_joint_deg&quot;: 53.796535289137765,
+  &quot;f_median_all_pairs&quot;: 584.1732018247551,
+  &quot;f_median_pairs_with_rotation_ge_min&quot;: 584.1732018247551,
+  &quot;f_std_all_pairs&quot;: 9.365822019704966,
+  &quot;min_angle_deg&quot;: 15.0,
+  &quot;f_px_at_original_resolution_scale&quot;: &quot;multiply by (original long edge / working long edge)&quot;
+ },
+ &quot;pairs&quot;: [
+  {
+   &quot;pair&quot;: &quot;1-2&quot;,
+   &quot;inliers&quot;: 442,
+   &quot;f_px&quot;: 584.1732018247551,
+   &quot;fit_error&quot;: 0.010623710435281136,
+   &quot;rotation_deg&quot;: 21.171554700690365,
+   &quot;boot_median&quot;: 584.2680484596237,
+   &quot;boot_std&quot;: 1.2554455098624266,
+   &quot;H&quot;: [
+    [
+     1.4847392496255205,
+     -0.014992928038957593,
+     -346.92589818138543
+    ],
+    [
+     0.3408223573024635,
+     1.3349084997641574,
+     -137.43726361310556
+    ],
+    [
+     0.0008224592651343098,
+     -6.972049855079507e-06,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;1-3&quot;,
+   &quot;inliers&quot;: 172,
+   &quot;f_px&quot;: 594.2126250703703,
+   &quot;fit_error&quot;: 0.011261771644827109,
+   &quot;rotation_deg&quot;: 39.8765077082554,
+   &quot;boot_median&quot;: 594.2521187542313,
+   &quot;boot_std&quot;: 2.0783905486579712,
+   &quot;H&quot;: [
+    [
+     2.390687332392156,
+     -0.09032180492595934,
+     -1010.3504881958085
+    ],
+    [
+     1.0063942642269854,
+     2.159578373756257,
+     -501.402203312508
+    ],
+    [
+     0.0023615191095190265,
+     -6.395406216480781e-05,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;2-3&quot;,
+   &quot;inliers&quot;: 474,
+   &quot;f_px&quot;: 574.3529055899918,
+   &quot;fit_error&quot;: 0.005858415457817347,
+   &quot;rotation_deg&quot;: 19.635538636786315,
+   &quot;boot_median&quot;: 574.3473169553566,
+   &quot;boot_std&quot;: 0.9964695765589777,
+   &quot;H&quot;: [
+    [
+     1.4493732413844793,
+     -0.033181038623261785,
+     -303.83502370484416
+    ],
+    [
+     0.33042769791835463,
+     1.2979795574956638,
+     -131.94826629430844
+    ],
+    [
+     0.0007585718452648785,
+     -2.8862152289933534e-06,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;2-4&quot;,
+   &quot;inliers&quot;: 135,
+   &quot;f_px&quot;: 596.0739034745304,
+   &quot;fit_error&quot;: 0.02156803582965936,
+   &quot;rotation_deg&quot;: 42.69411307643082,
+   &quot;boot_median&quot;: 595.9458832218926,
+   &quot;boot_std&quot;: 4.417809674432737,
+   &quot;H&quot;: [
+    [
+     2.5979438550609966,
+     -0.13000305601789272,
+     -1168.3149703901638
+    ],
+    [
+     1.1937984789667768,
+     2.382026242391908,
+     -594.1413771754394
+    ],
+    [
+     0.002749445267031928,
+     -9.202857068582117e-05,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;3-4&quot;,
+   &quot;inliers&quot;: 506,
+   &quot;f_px&quot;: 583.5326351209928,
+   &quot;fit_error&quot;: 0.01821908775845598,
+   &quot;rotation_deg&quot;: 24.190145674286427,
+   &quot;boot_median&quot;: 583.2350429714493,
+   &quot;boot_std&quot;: 1.4901593022277584,
+   &quot;H&quot;: [
+    [
+     1.5757407564105763,
+     -0.0372997663638513,
+     -407.929825745383
+    ],
+    [
+     0.4254038632275421,
+     1.3935226398506508,
+     -159.1755831759713
+    ],
+    [
+     0.000985725094655521,
+     -2.7444625827642676e-05,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;3-5&quot;,
+   &quot;inliers&quot;: 178,
+   &quot;f_px&quot;: 597.8009143125672,
+   &quot;fit_error&quot;: 0.015163242610343207,
+   &quot;rotation_deg&quot;: 42.43100472039887,
+   &quot;boot_median&quot;: 597.6151831626282,
+   &quot;boot_std&quot;: 4.041505675805039,
+   &quot;H&quot;: [
+    [
+     2.5960094709393857,
+     -0.04085624666094179,
+     -1199.6897277406551
+    ],
+    [
+     1.144415859217839,
+     2.384667804691369,
+     -561.586789314767
+    ],
+    [
+     0.0027280407579928874,
+     -6.414234897046994e-05,
+     1.0
+    ]
+   ]
+  },
+  {
+   &quot;pair&quot;: &quot;4-5&quot;,
+   &quot;inliers&quot;: 568,
+   &quot;f_px&quot;: 573.3090320429684,
+   &quot;fit_error&quot;: 0.012647657923729965,
+   &quot;rotation_deg&quot;: 19.446278871408133,
+   &quot;boot_median&quot;: 573.2465475009556,
+   &quot;boot_std&quot;: 1.1446203329635636,
+   &quot;H&quot;: [
+    [
+     1.4306266816769686,
+     0.00671888779499116,
+     -312.4287530839836
+    ],
+    [
+     0.2939359461586362,
+     1.2749534377447787,
+     -107.35854791391687
+    ],
+    [
+     0.0007452707727718394,
+     -2.1932307082146237e-05,
+     1.0
+    ]
+   ]
+  }
+ ]
+}</pre></details>
+<h3>focal_plot.png</h3><img src='extras/focal_pivot/focal_plot.png'>
+<h2>Additional feature output: interp_set1</h2>
+<details><summary>result.json (numbers for the report)</summary><pre>{
+ &quot;zoom&quot;: 1.0,
+ &quot;canvas&quot;: [
+  1318,
+  1400
+ ],
+ &quot;crop_xy&quot;: [
+  26,
+  455
+ ],
+ &quot;crop_win&quot;: 100,
+ &quot;mean_abs_diff_all_covered&quot;: 3.6690502166748047,
+ &quot;p99_abs_diff&quot;: 29.804475784301758,
+ &quot;max_abs_diff&quot;: 248.0,
+ &quot;frac_pixels_diff_gt_5&quot;: 0.20687066767789872,
+ &quot;mean_abs_diff_in_crop&quot;: 10.567315101623535
+}</pre></details>
+<h3>crop_compare.png</h3><img src='extras/interp_set1/crop_compare.png'>
+<h3>difference_x6.png</h3><img src='extras/interp_set1/difference_x6.png'>
+<h3>panorama_bilinear.png</h3><img src='extras/interp_set1/panorama_bilinear.png'>
+<h3>panorama_nearest.png</h3><img src='extras/interp_set1/panorama_nearest.png'>
+<h3>panorama_with_crop_box.png</h3><img src='extras/interp_set1/panorama_with_crop_box.png'>
+<h2>Additional feature output: ls_set1</h2>
+<details><summary>result.json (numbers for the report)</summary><pre>{
+ &quot;n_matches&quot;: 681,
+ &quot;ransac_inliers&quot;: 661,
+ &quot;thresh&quot;: 3.0,
+ &quot;ransac_H&quot;: [
+  [
+   1.9488877908123232,
+   -0.053990516803324125,
+   -673.4053208558231
+  ],
+  [
+   0.7010751588546935,
+   1.747507421177561,
+   -339.3648995695356
+  ],
+  [
+   0.0016146124446461865,
+   -2.167470900589869e-06,
+   1.0
+  ]
+ ],
+ &quot;ls_H&quot;: [
+  [
+   16.802619766889134,
+   -0.9136467438225603,
+   -5870.199930152515
+  ],
+  [
+   12.805824866758524,
+   9.033143130508797,
+   -5025.088265175601
+  ],
+  [
+   0.030911759202919265,
+   -0.008885228725096207,
+   1.0
+  ]
+ ],
+ &quot;all_matches&quot;: {
+  &quot;ransac&quot;: {
+   &quot;mean&quot;: 7.112751906806847,
+   &quot;median&quot;: 0.5969643751454344,
+   &quot;within_thr&quot;: 651,
+   &quot;max&quot;: 719.7691781463309
+  },
+  &quot;ls&quot;: {
+   &quot;mean&quot;: 27.085055546615994,
+   &quot;median&quot;: 14.56317817913161,
+   &quot;within_thr&quot;: 13,
+   &quot;max&quot;: 1370.916511789152
+  }
+ },
+ &quot;on_ransac_inliers&quot;: {
+  &quot;ransac&quot;: {
+   &quot;mean&quot;: 0.6948311321861204,
+   &quot;median&quot;: 0.5791950975345691,
+   &quot;within_thr&quot;: 651,
+   &quot;max&quot;: 3.5615993982504266
+  },
+  &quot;ls&quot;: {
+   &quot;mean&quot;: 17.43322417664737,
+   &quot;median&quot;: 14.373159510761296,
+   &quot;within_thr&quot;: 13,
+   &quot;max&quot;: 124.29745959859332
+  }
+ },
+ &quot;on_ransac_outliers&quot;: {
+  &quot;ransac&quot;: {
+   &quot;mean&quot;: 219.2250335080219,
+   &quot;median&quot;: 81.26330406965155,
+   &quot;within_thr&quot;: 0,
+   &quot;max&quot;: 719.7691781463309
+  },
+  &quot;ls&quot;: {
+   &quot;mean&quot;: 346.07808232407876,
+   &quot;median&quot;: 66.30009369323844,
+   &quot;within_thr&quot;: 0,
+   &quot;max&quot;: 1370.916511789152
+  }
+ },
+ &quot;mean_abs_pixel_diff_between_panoramas&quot;: 74.79131317138672
+}</pre></details>
+<h3>crop_compare.png</h3><img src='extras/ls_set1/crop_compare.png'>
+<h3>inliers.png</h3><img src='extras/ls_set1/inliers.png'>
+<h3>panorama_ls.png</h3><img src='extras/ls_set1/panorama_ls.png'>
+<h3>panorama_ransac.png</h3><img src='extras/ls_set1/panorama_ransac.png'>
+<h3>panoramas_side_by_side.png</h3><img src='extras/ls_set1/panoramas_side_by_side.png'>
+<h2>Additional feature output: sweep_set1_set2</h2>
+<details><summary>result.json (numbers for the report)</summary><pre>{
+ &quot;set1&quot;: {
+  &quot;n_matches&quot;: 681,
+  &quot;reference_thr&quot;: 3.0,
+  &quot;reference_set_size&quot;: 661,
+  &quot;rows&quot;: [
+   {
+    &quot;thr&quot;: 0.5,
+    &quot;inliers&quot;: 356,
+    &quot;inlier_ratio&quot;: 0.5227606461086637,
+    &quot;mean_err_inliers&quot;: 0.27341079360840576,
+    &quot;mean_err_on_reference_set&quot;: 0.756042595413735,
+    &quot;max_err_on_reference_set&quot;: 5.949257091146566
+   },
+   {
+    &quot;thr&quot;: 1.0,
+    &quot;inliers&quot;: 545,
+    &quot;inlier_ratio&quot;: 0.8002936857562408,
+    &quot;mean_err_inliers&quot;: 0.44008820810542215,
+    &quot;mean_err_on_reference_set&quot;: 0.6767742102604676,
+    &quot;max_err_on_reference_set&quot;: 4.791600123279033
+   },
+   {
+    &quot;thr&quot;: 2.0,
+    &quot;inliers&quot;: 641,
+    &quot;inlier_ratio&quot;: 0.9412628487518355,
+    &quot;mean_err_inliers&quot;: 0.5922538956081389,
+    &quot;mean_err_on_reference_set&quot;: 0.6688293277951523,
+    &quot;max_err_on_reference_set&quot;: 4.100852210671675
+   },
+   {
+    &quot;thr&quot;: 3.0,
+    &quot;inliers&quot;: 661,
+    &quot;inlier_ratio&quot;: 0.9706314243759178,
+    &quot;mean_err_inliers&quot;: 0.6948311321861204,
+    &quot;mean_err_on_reference_set&quot;: 0.6948311321861204,
+    &quot;max_err_on_reference_set&quot;: 3.5615993982504266
+   },
+   {
+    &quot;thr&quot;: 5.0,
+    &quot;inliers&quot;: 667,
+    &quot;inlier_ratio&quot;: 0.9794419970631424,
+    &quot;mean_err_inliers&quot;: 0.7556295212743785,
+    &quot;mean_err_on_reference_set&quot;: 0.7164673769226237,
+    &quot;max_err_on_reference_set&quot;: 3.4525726353800055
+   },
+   {
+    &quot;thr&quot;: 8.0,
+    &quot;inliers&quot;: 669,
+    &quot;inlier_ratio&quot;: 0.9823788546255506,
+    &quot;mean_err_inliers&quot;: 0.7848317263377759,
+    &quot;mean_err_on_reference_set&quot;: 0.7225943294600097,
+    &quot;max_err_on_reference_set&quot;: 3.421247201155779
+   },
+   {
+    &quot;thr&quot;: 12.0,
+    &quot;inliers&quot;: 670,
+    &quot;inlier_ratio&quot;: 0.9838472834067548,
+    &quot;mean_err_inliers&quot;: 0.7951496341094174,
+    &quot;mean_err_on_reference_set&quot;: 0.7119472094766542,
+    &quot;max_err_on_reference_set&quot;: 3.5255418469156243
+   },
+   {
+    &quot;thr&quot;: 20.0,
+    &quot;inliers&quot;: 670,
+    &quot;inlier_ratio&quot;: 0.9838472834067548,
+    &quot;mean_err_inliers&quot;: 0.7951496341094174,
+    &quot;mean_err_on_reference_set&quot;: 0.7119472094766542,
+    &quot;max_err_on_reference_set&quot;: 3.5255418469156243
+   }
+  ]
+ },
+ &quot;set2&quot;: {
+  &quot;n_matches&quot;: 538,
+  &quot;reference_thr&quot;: 3.0,
+  &quot;reference_set_size&quot;: 516,
+  &quot;rows&quot;: [
+   {
+    &quot;thr&quot;: 0.5,
+    &quot;inliers&quot;: 349,
+    &quot;inlier_ratio&quot;: 0.6486988847583643,
+    &quot;mean_err_inliers&quot;: 0.2561298352353216,
+    &quot;mean_err_on_reference_set&quot;: 0.4917476559404129,
+    &quot;max_err_on_reference_set&quot;: 3.051963850700475
+   },
+   {
+    &quot;thr&quot;: 1.0,
+    &quot;inliers&quot;: 472,
+    &quot;inlier_ratio&quot;: 0.8773234200743495,
+    &quot;mean_err_inliers&quot;: 0.3652451173688714,
+    &quot;mean_err_on_reference_set&quot;: 0.4718878626554713,
+    &quot;max_err_on_reference_set&quot;: 3.0895844127394483
+   },
+   {
+    &quot;thr&quot;: 2.0,
+    &quot;inliers&quot;: 510,
+    &quot;inlier_ratio&quot;: 0.9479553903345725,
+    &quot;mean_err_inliers&quot;: 0.4581635638595007,
+    &quot;mean_err_on_reference_set&quot;: 0.47867298728317553,
+    &quot;max_err_on_reference_set&quot;: 2.991427205090081
+   },
+   {
+    &quot;thr&quot;: 3.0,
+    &quot;inliers&quot;: 516,
+    &quot;inlier_ratio&quot;: 0.9591078066914498,
+    &quot;mean_err_inliers&quot;: 0.47500702763884434,
+    &quot;mean_err_on_reference_set&quot;: 0.47500702763884434,
+    &quot;max_err_on_reference_set&quot;: 2.8567553072127008
+   },
+   {
+    &quot;thr&quot;: 5.0,
+    &quot;inliers&quot;: 516,
+    &quot;inlier_ratio&quot;: 0.9591078066914498,
+    &quot;mean_err_inliers&quot;: 0.47500702763884434,
+    &quot;mean_err_on_reference_set&quot;: 0.47500702763884434,
+    &quot;max_err_on_reference_set&quot;: 2.8567553072127008
+   },
+   {
+    &quot;thr&quot;: 8.0,
+    &quot;inliers&quot;: 516,
+    &quot;inlier_ratio&quot;: 0.9591078066914498,
+    &quot;mean_err_inliers&quot;: 0.47500702763884434,
+    &quot;mean_err_on_reference_set&quot;: 0.47500702763884434,
+    &quot;max_err_on_reference_set&quot;: 2.8567553072127008
+   },
+   {
+    &quot;thr&quot;: 12.0,
+    &quot;inliers&quot;: 518,
+    &quot;inlier_ratio&quot;: 0.9628252788104089,
+    &quot;mean_err_inliers&quot;: 0.6328228512945714,
+    &quot;mean_err_on_reference_set&quot;: 0.574510911994412,
+    &quot;max_err_on_reference_set&quot;: 5.247245885881484
+   },
+   {
+    &quot;thr&quot;: 20.0,
+    &quot;inliers&quot;: 518,
+    &quot;inlier_ratio&quot;: 0.9628252788104089,
+    &quot;mean_err_inliers&quot;: 0.6328228512945714,
+    &quot;mean_err_on_reference_set&quot;: 0.574510911994412,
+    &quot;max_err_on_reference_set&quot;: 5.247245885881484
+   }
+  ]
+ }
+}</pre></details>
+<h3>crops.png</h3><img src='extras/sweep_set1_set2/crops.png'>
+<h3>sweep_plot.png</h3><img src='extras/sweep_set1_set2/sweep_plot.png'>
+</body></html>

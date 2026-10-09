@@ -1,0 +1,17 @@
+{
+  "zoom": 1.0,
+  "canvas": [
+    1318,
+    1400
+  ],
+  "crop_xy": [
+    26,
+    455
+  ],
+  "crop_win": 100,
+  "mean_abs_diff_all_covered": 3.6690502166748047,
+  "p99_abs_diff": 29.804475784301758,
+  "max_abs_diff": 248.0,
+  "frac_pixels_diff_gt_5": 0.20687066767789872,
+  "mean_abs_diff_in_crop": 10.567315101623535
+}

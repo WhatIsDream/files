@@ -1,0 +1,144 @@
+{
+  "set1": {
+    "n_matches": 681,
+    "reference_thr": 3.0,
+    "reference_set_size": 661,
+    "rows": [
+      {
+        "thr": 0.5,
+        "inliers": 356,
+        "inlier_ratio": 0.5227606461086637,
+        "mean_err_inliers": 0.27341079360840576,
+        "mean_err_on_reference_set": 0.756042595413735,
+        "max_err_on_reference_set": 5.949257091146566
+      },
+      {
+        "thr": 1.0,
+        "inliers": 545,
+        "inlier_ratio": 0.8002936857562408,
+        "mean_err_inliers": 0.44008820810542215,
+        "mean_err_on_reference_set": 0.6767742102604676,
+        "max_err_on_reference_set": 4.791600123279033
+      },
+      {
+        "thr": 2.0,
+        "inliers": 641,
+        "inlier_ratio": 0.9412628487518355,
+        "mean_err_inliers": 0.5922538956081389,
+        "mean_err_on_reference_set": 0.6688293277951523,
+        "max_err_on_reference_set": 4.100852210671675
+      },
+      {
+        "thr": 3.0,
+        "inliers": 661,
+        "inlier_ratio": 0.9706314243759178,
+        "mean_err_inliers": 0.6948311321861204,
+        "mean_err_on_reference_set": 0.6948311321861204,
+        "max_err_on_reference_set": 3.5615993982504266
+      },
+      {
+        "thr": 5.0,
+        "inliers": 667,
+        "inlier_ratio": 0.9794419970631424,
+        "mean_err_inliers": 0.7556295212743785,
+        "mean_err_on_reference_set": 0.7164673769226237,
+        "max_err_on_reference_set": 3.4525726353800055
+      },
+      {
+        "thr": 8.0,
+        "inliers": 669,
+        "inlier_ratio": 0.9823788546255506,
+        "mean_err_inliers": 0.7848317263377759,
+        "mean_err_on_reference_set": 0.7225943294600097,
+        "max_err_on_reference_set": 3.421247201155779
+      },
+      {
+        "thr": 12.0,
+        "inliers": 670,
+        "inlier_ratio": 0.9838472834067548,
+        "mean_err_inliers": 0.7951496341094174,
+        "mean_err_on_reference_set": 0.7119472094766542,
+        "max_err_on_reference_set": 3.5255418469156243
+      },
+      {
+        "thr": 20.0,
+        "inliers": 670,
+        "inlier_ratio": 0.9838472834067548,
+        "mean_err_inliers": 0.7951496341094174,
+        "mean_err_on_reference_set": 0.7119472094766542,
+        "max_err_on_reference_set": 3.5255418469156243
+      }
+    ]
+  },
+  "set2": {
+    "n_matches": 538,
+    "reference_thr": 3.0,
+    "reference_set_size": 516,
+    "rows": [
+      {
+        "thr": 0.5,
+        "inliers": 349,
+        "inlier_ratio": 0.6486988847583643,
+        "mean_err_inliers": 0.2561298352353216,
+        "mean_err_on_reference_set": 0.4917476559404129,
+        "max_err_on_reference_set": 3.051963850700475
+      },
+      {
+        "thr": 1.0,
+        "inliers": 472,
+        "inlier_ratio": 0.8773234200743495,
+        "mean_err_inliers": 0.3652451173688714,
+        "mean_err_on_reference_set": 0.4718878626554713,
+        "max_err_on_reference_set": 3.0895844127394483
+      },
+      {
+        "thr": 2.0,
+        "inliers": 510,
+        "inlier_ratio": 0.9479553903345725,
+        "mean_err_inliers": 0.4581635638595007,
+        "mean_err_on_reference_set": 0.47867298728317553,
+        "max_err_on_reference_set": 2.991427205090081
+      },
+      {
+        "thr": 3.0,
+        "inliers": 516,
+        "inlier_ratio": 0.9591078066914498,
+        "mean_err_inliers": 0.47500702763884434,
+        "mean_err_on_reference_set": 0.47500702763884434,
+        "max_err_on_reference_set": 2.8567553072127008
+      },
+      {
+        "thr": 5.0,
+        "inliers": 516,
+        "inlier_ratio": 0.9591078066914498,
+        "mean_err_inliers": 0.47500702763884434,
+        "mean_err_on_reference_set": 0.47500702763884434,
+        "max_err_on_reference_set": 2.8567553072127008
+      },
+      {
+        "thr": 8.0,
+        "inliers": 516,
+        "inlier_ratio": 0.9591078066914498,
+        "mean_err_inliers": 0.47500702763884434,
+        "mean_err_on_reference_set": 0.47500702763884434,
+        "max_err_on_reference_set": 2.8567553072127008
+      },
+      {
+        "thr": 12.0,
+        "inliers": 518,
+        "inlier_ratio": 0.9628252788104089,
+        "mean_err_inliers": 0.6328228512945714,
+        "mean_err_on_reference_set": 0.574510911994412,
+        "max_err_on_reference_set": 5.247245885881484
+      },
+      {
+        "thr": 20.0,
+        "inliers": 518,
+        "inlier_ratio": 0.9628252788104089,
+        "mean_err_inliers": 0.6328228512945714,
+        "mean_err_on_reference_set": 0.574510911994412,
+        "max_err_on_reference_set": 5.247245885881484
+      }
+    ]
+  }
+}

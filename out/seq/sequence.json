@@ -1,0 +1,73 @@
+{
+  "n_images": 5,
+  "ref": 2,
+  "canvas_WxH": "3225x2139",
+  "area_scale": [
+    3.6490960941571404,
+    1.2847808839710197,
+    0.9970854166666666,
+    1.4567623313488818,
+    4.412637860929925
+  ],
+  "pairs": [
+    {
+      "pair": "1-2",
+      "kp_a": 1973,
+      "kp_b": 2173,
+      "matches": 490,
+      "inliers": 442,
+      "inlier_ratio": 0.9020408163265307,
+      "err_before": 1.1338728441276846,
+      "err_after": 1.034589916283994,
+      "file": "matches_pair1.png"
+    },
+    {
+      "pair": "2-3",
+      "kp_a": 2173,
+      "kp_b": 2627,
+      "matches": 515,
+      "inliers": 474,
+      "inlier_ratio": 0.920388349514563,
+      "err_before": 0.8238296949529224,
+      "err_after": 0.7748787887149367,
+      "file": "matches_pair2.png"
+    },
+    {
+      "pair": "3-4",
+      "kp_a": 2627,
+      "kp_b": 3733,
+      "matches": 553,
+      "inliers": 506,
+      "inlier_ratio": 0.9150090415913201,
+      "err_before": 1.1307256678343034,
+      "err_after": 0.8898463885816543,
+      "file": "matches_pair3.png"
+    },
+    {
+      "pair": "4-5",
+      "kp_a": 3733,
+      "kp_b": 4000,
+      "matches": 596,
+      "inliers": 568,
+      "inlier_ratio": 0.9530201342281879,
+      "err_before": 1.1056588402486849,
+      "err_after": 0.9057790296020735,
+      "file": "matches_pair4.png"
+    }
+  ],
+  "params": {
+    "images": [
+      "rot1.jpg",
+      "rot2.jpg",
+      "rot3.jpg",
+      "rot4.jpg",
+      "rot5.jpg"
+    ],
+    "SIFT nfeatures": 4000,
+    "ratio": 0.75,
+    "RANSAC thr (px)": 3.0,
+    "RANSAC iters": 2000,
+    "interp": "bilinear",
+    "reference choice": "center"
+  }
+}
